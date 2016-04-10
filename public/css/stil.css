@@ -28,7 +28,6 @@ a {
 }
 
 #seznam-kanalov, #seznam-uporabnikov {
-  float: right;
   width: 100%;
   height: 150px;
   overflow: auto;
@@ -57,3 +56,9 @@ a {
 #pomoc {
   font: 10px "Lucida Grande", Helvetica, Arial, sans-serif;
 }
+
+#slike {
+  margin-left:  20px;
+  width: 200px;
+  
+} 
