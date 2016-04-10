@@ -1,5 +1,6 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
+  var jeVideo = sporocilo.indexOf('iframe src="https://www.youtube.com/embed/') > -1;
   var jeSlika = sporocilo.match(/(http|https)/g) && sporocilo.match(/(.jpg|.png|.gif)/g);
   
   if (jeSmesko ) {
@@ -8,10 +9,16 @@ function divElementEnostavniTekst(sporocilo) {
   } 
   else if(jeSlika) {
     return $('<div style="font-weight: bold;"></div>').html(sporocilo);
-  } 
-  else  {
+  }
+  else if (jeVideo) {
+      //console.log("ratal je");
+      return $('<div style="font-weight: bold;"></div>').html(sporocilo);
+  } else  {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
   }
+
+
+  
 }
 
 function divElementHtmlTekst(sporocilo) {
@@ -22,6 +29,7 @@ function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
   
+  //sporocilo = dodajVideo(sporocilo);
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
@@ -35,8 +43,10 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
     sporocilo = dodajSlike(sporocilo);
+    sporocilo = dodajVideo(sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
+    
   }
 
   $('#poslji-sporocilo').val('');
@@ -44,6 +54,7 @@ function procesirajVnosUporabnika(klepetApp, socket) {
 
 var socket = io.connect();
 var trenutniVzdevek = "", trenutniKanal = "";
+var link;
 
 var vulgarneBesede = [];
 $.get('/swearWords.txt', function(podatki) {
@@ -168,6 +179,32 @@ function dodajSlike (vhodnoBesedilo) {
   }
   
 }
+function dodajVideo(vhodnoBesedilo){
+  if (vhodnoBesedilo.indexOf('https://www.youtube.com/') > -1){
+    link = vhodnoBesedilo;
+    var videoID = dobiIDvidea(vhodnoBesedilo);
+    return vhodnoBesedilo.replace(vhodnoBesedilo, '<iframe src="https://www.youtube.com/embed/' + videoID + '" id="youtube" allowfullscreen></iframe>');
+    
+    
+  }
+  else{
+    return vhodnoBesedilo;
+  }
+}
+ function dobiIDvidea(vhodnoBesedilo){
+    var regExp = /^.*(youtu\.be\/|v\/|u\/\w\/|embed\/|watch\?v=|\&v=)([^#\&\?]*).*/;
+    var match = vhodnoBesedilo.match(regExp);
+    if (match && match[2].length == 11) {
+      return match[2];
+    } else {
+      //error
+    }
+  
+ }
+  
+      
+    
+  
 
 
 
