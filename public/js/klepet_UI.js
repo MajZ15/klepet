@@ -21,7 +21,7 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
-  sporocilo = dodajSlike(sporocilo);
+  
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
@@ -33,6 +33,8 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
+    $('#sporocila').append(divElementEnostavniTekst(sporocilo));
+    sporocilo = dodajSlike(sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
   }
@@ -146,8 +148,8 @@ function dodajSlike (vhodnoBesedilo) {
   if (vhodnoBesedilo.match(/(http|https)/g) && vhodnoBesedilo.match(/(.jpg|.png|.gif)/g))  {
      var link = "" + vhodnoBesedilo + "\n";
      var dodajVmes = /((http|https):\/\/[^\s]*(.jpg|.gif|.png))/g;
-     vhodnoBesedilo = vhodnoBesedilo.replace(dodajVmes, "<img src=\"$1\" alt=\"dodajVmes\" class=\"slike\">");
-     return link + vhodnoBesedilo;
+     vhodnoBesedilo = vhodnoBesedilo.replace(dodajVmes, "<img src=\"$1\" alt=\"dodajVmes\" id=\"slike\">");
+     return vhodnoBesedilo;
    }
 
   
