@@ -1,9 +1,15 @@
 function divElementEnostavniTekst(sporocilo) {
   var jeSmesko = sporocilo.indexOf('http://sandbox.lavbic.net/teaching/OIS/gradivo/') > -1;
-  if (jeSmesko) {
+  var jeSlika = sporocilo.match(/(http|https)/g) && sporocilo.match(/(.jpg|.png|.gif)/g);
+  
+  if (jeSmesko ) {
     sporocilo = sporocilo.replace(/\</g, '&lt;').replace(/\>/g, '&gt;').replace('&lt;img', '<img').replace('png\' /&gt;', 'png\' />');
     return $('<div style="font-weight: bold"></div>').html(sporocilo);
-  } else {
+  } 
+  else if(jeSlika) {
+    return $('<div style="font-weight: bold;"></div>').html(sporocilo);
+  } 
+  else  {
     return $('<div style="font-weight: bold;"></div>').text(sporocilo);
   }
 }
@@ -15,6 +21,7 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
+  
   var sistemskoSporocilo;
 
   if (sporocilo.charAt(0) == '/') {
@@ -23,8 +30,11 @@ function procesirajVnosUporabnika(klepetApp, socket) {
       $('#sporocila').append(divElementHtmlTekst(sistemskoSporocilo));
     }
   } else {
+    
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
+    $('#sporocila').append(divElementEnostavniTekst(sporocilo));
+    sporocilo = dodajSlike(sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
   }
@@ -141,3 +151,23 @@ function dodajSmeske(vhodnoBesedilo) {
   }
   return vhodnoBesedilo;
 }
+
+function dodajSlike (vhodnoBesedilo) {
+  // var novoBesedilo = "deluje";
+  
+  if (vhodnoBesedilo.match(/(http|https)/g) && vhodnoBesedilo.match(/(.jpg|.png|.gif)/g))  {
+     var link = "" + vhodnoBesedilo + "\n";
+     var dodajVmes = /((http|https):\/\/[^\s]*(.jpg|.gif|.png))/g;
+     vhodnoBesedilo = vhodnoBesedilo.replace(dodajVmes, "<img src=\"$1\" alt=\"dodajVmes\" id=\"slike\">");
+     return vhodnoBesedilo;
+   }
+
+  
+  else{
+    return vhodnoBesedilo;
+  }
+  
+}
+
+
+
