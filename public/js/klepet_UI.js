@@ -28,7 +28,8 @@ function divElementHtmlTekst(sporocilo) {
 function procesirajVnosUporabnika(klepetApp, socket) {
   var sporocilo = $('#poslji-sporocilo').val();
   sporocilo = dodajSmeske(sporocilo);
-  
+  sporocilo = dodajSlike(sporocilo);
+  sporocilo = dodajVideo(sporocilo)
   //sporocilo = dodajVideo(sporocilo);
   var sistemskoSporocilo;
 
@@ -42,9 +43,8 @@ function procesirajVnosUporabnika(klepetApp, socket) {
     sporocilo = filtirirajVulgarneBesede(sporocilo);
     klepetApp.posljiSporocilo(trenutniKanal, sporocilo);
     $('#sporocila').append(divElementEnostavniTekst(sporocilo));
-    sporocilo = dodajSlike(sporocilo);
-    sporocilo = dodajVideo(sporocilo);
-    $('#sporocila').append(divElementEnostavniTekst(sporocilo));
+
+    
     $('#sporocila').scrollTop($('#sporocila').prop('scrollHeight'));
     
   }
